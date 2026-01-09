@@ -354,6 +354,98 @@
         });
       });
     });
+
+// ✅ FUNGSI SEARCH PRODUK
+function searchProducts(query) {
+  let productList = JSON.parse(localStorage.getItem('herbaprimaProducts')) || products;
+  
+  if (!query.trim()) {
+    // Jika kosong, tampilkan sesuai filter aktif
+    const activeFilter = document.querySelector('.filter-btn.active');
+    const category = activeFilter ? activeFilter.dataset.category : 'all';
+    renderProducts(category === 'all' ? 'all' : category);
+    return;
+  }
+
+  // Cari di semua produk (abaikan kategori)
+  const filtered = productList.filter(product => 
+    product.name.toLowerCase().includes(query.toLowerCase()) ||
+    product.category.toLowerCase().includes(query.toLowerCase())
+  );
+
+  // Render hasil pencarian
+  const grid = document.getElementById('productsGrid');
+  if (grid) {
+    grid.innerHTML = '';
+    if (filtered.length === 0) {
+      grid.innerHTML = `
+        <div class="no-results fade-in">
+          <i class="fas fa-search"></i>
+          <p>Tidak ditemukan produk dengan kata "<strong>${query}</strong>"</p>
+          <button class="btn btn-outline" id="clearSearch">Hapus Pencarian</button>
+        </div>
+      `;
+      document.getElementById('clearSearch')?.addEventListener('click', () => {
+        document.getElementById('productSearch').value = '';
+        searchProducts('');
+      });
+    } else {
+      filtered.forEach(product => {
+        const priceFormatted = `Rp ${product.price.toLocaleString('id-ID')}`;
+        const card = document.createElement('div');
+        card.className = 'product-card stagger-item slide-up';
+        card.innerHTML = `
+          <img src="${product.image}" alt="${product.name}" data-id="${product.id}" onError="this.src='https://via.placeholder.com/260x180?text=No+Image'" />
+          <div class="card-body">
+            <span class="category">${product.category}</span>
+            <h4>${product.name}</h4>
+            <div class="price">${priceFormatted}</div>
+            <button class="btn btn-outline btn-add" data-id="${product.id}">Pilih Produk</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+      // Event: Pilih Produk → modal
+      document.querySelectorAll('.btn-add').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const id = e.target.dataset.id;
+          const product = productList.find(p => p.id === id);
+          if (product) openProductModal(product);
+        });
+      });
+
+      // Event: Klik gambar → modal
+      document.querySelectorAll('.product-card img').forEach(img => {
+        img.addEventListener('click', (e) => {
+          const id = e.target.dataset.id || e.target.closest('.product-card').querySelector('button').dataset.id;
+          const product = productList.find(p => p.id === id);
+          if (product) openProductModal(product);
+        });
+      });
+    }
+  }
+}
+
+// ✅ EVENT: Saat Ketik di Search Box
+document.getElementById('productSearch')?.addEventListener('input', (e) => {
+  searchProducts(e.target.value);
+});
+
+// ✅ RESET SEARCH SAAT GANTI FILTER
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    // Hapus teks pencarian
+    document.getElementById('productSearch').value = '';
+    
+    // Jalankan logika filter seperti biasa
+    const category = this.dataset.category;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    renderProducts(category === 'all' ? 'all' : category);
+  });
+});
   </script>
 
   <!-- ✅ SCRIPTS -->
