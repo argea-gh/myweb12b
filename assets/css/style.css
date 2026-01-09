@@ -429,6 +429,31 @@ body {
   color: #9ca3af;
 }
 
+/* Jika tidak ditemukan */
+
+.no-results {
+  text-align: center;
+  padding: 60px 20px;
+  grid-column: 1 / -1;
+}
+
+.no-results i {
+  font-size: 3rem;
+  color: #d1d5db;
+  margin-bottom: 20px;
+}
+
+.no-results p {
+  font-size: 1.2rem;
+  color: #6b7280;
+  margin-bottom: 24px;
+}
+
+.no-results strong {
+  color: var(--green-primary);
+}
+
+
 /* ────────────────────────────────────────── */
 /* ALL PRODUCTS GRID */
 /* ────────────────────────────────────────── */
