@@ -355,7 +355,7 @@
       });
     });
 
-// ✅ FUNGSI SEARCH PRODUK
+// ✅ FUNGSI SEARCH PRODUK — VERSI DIPERBAIKI
 function searchProducts(query) {
   let productList = JSON.parse(localStorage.getItem('herbaprimaProducts')) || products;
   
@@ -382,18 +382,28 @@ function searchProducts(query) {
         <div class="no-results fade-in">
           <i class="fas fa-search"></i>
           <p>Tidak ditemukan produk dengan kata "<strong>${query}</strong>"</p>
-          <button class="btn btn-outline" id="clearSearch">Hapus Pencarian</button>
+          <button class="btn btn-outline" id="clearSearch">
+            <i class="fas fa-times"></i> Hapus Pencarian
+          </button>
         </div>
       `;
+      // Event: Hapus pencarian
       document.getElementById('clearSearch')?.addEventListener('click', () => {
         document.getElementById('productSearch').value = '';
         searchProducts('');
       });
     } else {
-      filtered.forEach(product => {
+      // ✅ RENDER + LANGSUNG ANIMASI (TANPA TUNGGU SCROLL)
+      filtered.forEach((product, index) => {
         const priceFormatted = `Rp ${product.price.toLocaleString('id-ID')}`;
         const card = document.createElement('div');
-        card.className = 'product-card stagger-item slide-up';
+        card.className = 'product-card stagger-item'; // hapus slide-up sementara
+        
+        // ✅ Tambahkan visible langsung setelah delay kecil
+        setTimeout(() => {
+          card.classList.add('visible');
+        }, index * 80); // stagger 0.08s per item
+
         card.innerHTML = `
           <img src="${product.image}" alt="${product.name}" data-id="${product.id}" onError="this.src='https://via.placeholder.com/260x180?text=No+Image'" />
           <div class="card-body">
