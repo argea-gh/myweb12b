@@ -524,6 +524,14 @@ body {
 }
 /* End of  tambahan utk modif animasi */
 
+/* Tombol hapus pencarian */
+#clearSearch {
+  margin-top: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .product-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 20px rgba(0,0,0,0.12);
